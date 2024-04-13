@@ -1,0 +1,132 @@
+claude elwood shannon (april 30, 1916 february 24, 2001) was an american mathematician, electrical engineer, computer scientist and cryptographer known as the "father of information theory". he was the first to describe the boolean gates (electronic circuits) that are essential to all digital electronic circuits, and he built the first machine learning device, thus founding the field of artificial intelligence. he is credited alongside george boole for laying the foundations of the information age.as a 21-year-old master's degree student at the massachusetts institute of technology (mit), he wrote his thesis demonstrating that electrical applications of boolean algebra could construct any logical numerical relationship, thereby establishing the theory behind digital computing and digital circuits. in 1987, howard gardner called his thesis "possibly the most important, and also the most famous, master's thesis of the century", and herman goldstine described it as "surely ... one of the most important master's theses ever written ... it helped to change digital circuit design from an art to a science."shannon also contributed to the field of cryptanalysis for national defense of the united states during world war ii, including his fundamental work on codebreaking and secure telecommunications, writing a paper which is considered one of the foundational pieces of modern cryptography, and whose work "was a turning point, and marked the closure of classical cryptography and the beginning of modern cryptography."his mathematical theory of communication laid the foundations for the field of information theory, with his famous paper being called the "magna carta of the information age" by scientific american, along with his work being described as being at "the heart of today's digital information technology".his theseus machine was the first electrical device to learn by trial and error. it is was thus the first example of artificial intelligence.rodney brooks declared that shannon was the 20th century engineer who contributed the most to 21st century technologies. his achievements are said to be on par with those of albert einstein and sir isaac newton in their fields.
+
+
+== biography ==
+
+
+=== childhood ===
+the shannon family lived in gaylord, michigan, and claude was born in a hospital in nearby petoskey. his father, claude sr. (18621934), was a businessman and, for a while, a judge of probate in gaylord. his mother, mabel wolf shannon (18901945), was a language teacher, who also served as the principal of gaylord high school. claude sr. was a descendant of new jersey settlers, while mabel was a child of german immigrants. shannon's family was active in their methodist church during his youth.most of the first 16 years of shannon's life were spent in gaylord, where he attended public school, graduating from gaylord high school in 1932. shannon showed an inclination towards mechanical and electrical things. his best subjects were science and mathematics. at home, he constructed such devices as models of planes, a radio-controlled model boat and a barbed-wire telegraph system to a friend's house a half-mile away. while growing up, he also worked as a messenger for the western union company.
+shannon's childhood hero was thomas edison, whom he later learned was a distant cousin. both shannon and edison were descendants of john ogden (16091682), a colonial leader and an ancestor of many distinguished people.
+
+
+=== logic circuits ===
+in 1932, shannon entered the university of michigan, where he was introduced to the work of george boole. he graduated in 1936 with two bachelor's degrees: one in electrical engineering and the other in mathematics.
+in 1936, shannon began his graduate studies in electrical engineering at mit, where he worked on vannevar bush's differential analyzer, an early analog computer. while studying the complicated ad hoc circuits of this analyzer, shannon designed switching circuits based on boole's concepts. in 1937, he wrote his master's degree thesis, a symbolic analysis of relay and switching circuits. a paper from this thesis was published in 1938. in this work, shannon diagramed switching circuits that could implement the essential operators of boolean algebra. then he proved that his switching circuits could be used to simplify the arrangement of the electromechanical relays that were used during that time in telephone call routing switches. next, he expanded this concept, proving that these circuits could solve all problems that boolean algebra could solve. in the last chapter, he presented diagrams of several circuits, including a digital 4-bit full adder.using this property of electrical switches to implement logic is the fundamental concept that underlies all electronic digital computers. shannon's work became the foundation of digital circuit design, as it became widely known in the electrical engineering community during and after world war ii. the theoretical rigor of shannon's work superseded the ad hoc methods that had prevailed previously. howard gardner called shannon's thesis "possibly the most important, and also the most noted, master's thesis of the century."shannon received his phd in mathematics from mit in 1940. vannevar bush had suggested that shannon should work on his dissertation at the cold spring harbor laboratory, in order to develop a mathematical formulation for mendelian genetics. this research resulted in shannon's phd thesis, called an algebra for theoretical genetics.in 1940, shannon became a national research fellow at the institute for advanced study in princeton, new jersey. in princeton, shannon had the opportunity to discuss his ideas with influential scientists and mathematicians such as hermann weyl and john von neumann, and he also had occasional encounters with albert einstein and kurt gdel. shannon worked freely across disciplines, and this ability may have contributed to his later development of mathematical information theory.
+
+
+=== wartime research ===
+shannon then joined bell labs to work on fire-control systems and cryptography during world war ii, under a contract with section d-2 (control systems section) of the national defense research committee (ndrc).
+shannon is credited with the invention of signal-flow graphs, in 1942. he discovered the topological gain formula while investigating the functional operation of an analog computer.for two months early in 1943, shannon came into contact with the leading british mathematician alan turing. turing had been posted to washington to share with the u.s. navy's cryptanalytic service the methods used by the british government code and cypher school at bletchley park to break the cyphers used by the kriegsmarine u-boats in the north atlantic ocean. he was also interested in the encipherment of speech and to this end spent time at bell labs. shannon and turing met at teatime in the cafeteria. turing showed shannon his 1936 paper that defined what is now known as the "universal turing machine". this impressed shannon, as many of its ideas complemented his own.
+in 1945, as the war was coming to an end, the ndrc was issuing a summary of technical reports as a last step prior to its eventual closing down. inside the volume on fire control, a special essay titled data smoothing and prediction in fire-control systems, coauthored by shannon, ralph beebe blackman, and hendrik wade bode, formally treated the problem of smoothing the data in fire-control by analogy with "the problem of separating a signal from interfering noise in communications systems." in other words, it modeled the problem in terms of data and signal processing and thus heralded the coming of the information age.
+shannon's work on cryptography was even more closely related to his later publications on communication theory. at the close of the war, he prepared a classified memorandum for bell telephone labs entitled "a mathematical theory of cryptography", dated september 1945. a declassified version of this paper was published in 1949 as "communication theory of secrecy systems" in the bell system technical journal. this paper incorporated many of the concepts and mathematical formulations that also appeared in his a mathematical theory of communication. shannon said that his wartime insights into communication theory and cryptography developed simultaneously, and that "they were so close together you couldn't separate them". in a footnote near the beginning of the classified report, shannon announced his intention to "develop these results in a forthcoming memorandum on the transmission of information."while he was at bell labs, shannon proved that the cryptographic one-time pad is unbreakable in his classified research that was later published in 1949. the same article also proved that any unbreakable system must have essentially the same characteristics as the one-time pad: the key must be truly random, as large as the plaintext, never reused in whole or part, and kept secret.
+
+
+=== information theory ===
+
+in 1948, the promised memorandum appeared as "a mathematical theory of communication", an article in two parts in the july and october issues of the bell system technical journal. this work focuses on the problem of how best to encode the message a sender wants to transmit. shannon developed information entropy as a measure of the information content in a message, which is a measure of uncertainty reduced by the message. in so doing, he essentially invented the field of information theory.
+the book the mathematical theory of communication reprints shannon's 1948 article and warren weaver's popularization of it, which is accessible to the non-specialist. weaver pointed out that the word "information" in communication theory is not related to what you do say, but to what you could say. that is, information is a measure of one's freedom of choice when one selects a message. shannon's concepts were also popularized, subject to his own proofreading, in john robinson pierce's symbols, signals, and noise.
+information theory's fundamental contribution to natural language processing and computational linguistics was further established in 1951, in his article "prediction and entropy of printed english", showing upper and lower bounds of entropy on the statistics of english giving a statistical foundation to language analysis. in addition, he proved that treating space as the 27th letter of the alphabet actually lowers uncertainty in written language, providing a clear quantifiable link between cultural practice and probabilistic cognition.
+another notable paper published in 1949 is "communication theory of secrecy systems", a declassified version of his wartime work on the mathematical theory of cryptography, in which he proved that all theoretically unbreakable cyphers must have the same requirements as the one-time pad. he is also credited with the introduction of sampling theory, which is concerned with representing a continuous-time signal from a (uniform) discrete set of samples. this theory was essential in enabling telecommunications to move from analog to digital transmissions systems in the 1960s and later.
+
+
+=== artificial intelligence ===
+in 1950, shannon, designed, and built with the help of his wife, a machine learning device, theseus. it consisted of a maze on a surface, below which were sensors that followed the path of a mechanical mouse through the maze. after much trial and error, this device would learn the shortest path through the maze, and direct the mechanical mouse through the maze. the pattern of the maze could be changed at will.mazin gilbert says theseus "inspired the whole field of ai. this random trial and error is the foundation of artificial intelligence."
+
+
+=== teaching at mit ===
+in 1956 shannon joined the mit faculty, holding an endowed chair. he worked in the research laboratory of electronics (rle). he continued to serve on the mit faculty until 1978.
+
+
+=== later life ===
+shannon developed alzheimer's disease and spent the last few years of his life in a nursing home; he died in 2001, survived by his wife, a son and daughter, and two granddaughters.
+
+
+=== hobbies and inventions ===
+outside of shannon's academic pursuits, he was interested in juggling, unicycling, and chess. he also invented many devices, including a roman numeral computer called throbac, and juggling machines. he built a device that could solve the rubik's cube puzzle.shannon designed the minivac 601, a digital computer trainer to teach business people about how computers functioned. it was sold by the scientific development corp starting in 1961.he is also considered the co-inventor of the first wearable computer along with edward o. thorp. the device was used to improve the odds when playing roulette.
+
+
+=== personal life ===
+shannon married norma levor, a wealthy, jewish, left-wing intellectual in january 1940. the marriage ended in divorce after about a year. levor later married ben barzman.shannon met his second wife, mary elizabeth moore (betty), when she was a numerical analyst at bell labs. they were married in 1949. betty assisted claude in building some of his most famous inventions. they had three children.shannon presented himself as apolitical and an atheist.
+
+
+=== tributes ===
+there are six statues of shannon sculpted by eugene daub: one at the university of michigan; one at mit in the laboratory for information and decision systems; one in gaylord, michigan; one at the university of california, san diego; one at bell labs; and another at at&t shannon labs. the statue in gaylord is located in the claude shannon memorial park. after the breakup of the bell system, the part of bell labs that remained with at&t corporation was named shannon labs in his honor.
+according to neil sloane, an at&t fellow who co-edited shannon's large collection of papers in 1993, the perspective introduced by shannon's communication theory (now called information theory) is the foundation of the digital revolution, and every device containing a microprocessor or microcontroller is a conceptual descendant of shannon's publication in 1948: "he's one of the great men of the century. without him, none of the things we know today would exist. the whole digital revolution started with him." the cryptocurrency unit shannon (a synonym for gwei) is named after him.shannon is credited by many as single-handedly creating information theory and for laying the foundations for the digital age.a mind at play, a biography of shannon written by jimmy soni and rob goodman, was published in 2017. they described shannon as "the most important genius youve never heard of, a man whose intellect was on par with albert einstein and isaac newton".on april 30, 2016, shannon was honored with a google doodle to celebrate his life on what would have been his 100th birthday.the bit player, a feature film about shannon directed by mark levinson premiered at the world science festival in 2019. drawn from interviews conducted with shannon in his house in the 1980s, the film was released on amazon prime in august 2020.
+
+
+== the mathematical theory of communication ==
+
+
+=== weaver's contribution ===
+shannon's the mathematical theory of communication, begins with an interpretation of his own work by warren weaver. although shannon's entire work is about communication itself, warren weaver communicated his ideas in such a way that those not acclimated to complex theory and mathematics could comprehend the fundamental laws he put forth. the coupling of their unique communicational abilities and ideas generated the shannon-weaver model, although the mathematical and theoretical underpinnings emanate entirely from shannon's work after weaver's introduction. for the layman, weaver's introduction better communicates the mathematical theory of communication, but shannon's subsequent logic, mathematics, and expressive precision was responsible for defining the problem itself.
+
+
+== other work ==
+
+
+=== shannon's mouse ===
+"theseus", created in 1950, was a mechanical mouse controlled by an electromechanical relay circuit that enabled it to move around a labyrinth of 25 squares. the maze configuration was flexible and it could be modified arbitrarily by rearranging movable partitions. the mouse was designed to search through the corridors until it found the target. having travelled through the maze, the mouse could then be placed anywhere it had been before, and because of its prior experience it could go directly to the target. if placed in unfamiliar territory, it was programmed to search until it reached a known location and then it would proceed to the target, adding the new knowledge to its memory and learning new behavior. shannon's mouse appears to have been the first artificial learning device of its kind.
+
+
+=== shannon's estimate for the complexity of chess ===
+
+in 1949 shannon completed a paper (published in march 1950) which estimates the game-tree complexity of chess, which is approximately 10120. this number is now often referred to as the "shannon number", and is still regarded today as an accurate estimate of the game's complexity. the number is often cited as one of the barriers to solving the game of chess using an exhaustive analysis (i.e. brute force analysis).
+
+
+=== shannon's computer chess program ===
+on march 9, 1949, shannon presented a paper called "programming a computer for playing chess". the paper was presented at the national institute for radio engineers convention in new york. he described how to program a computer to play chess based on position scoring and move selection. he proposed basic strategies for restricting the number of possibilities to be considered in a game of chess. in march 1950 it was published in philosophical magazine, and is considered one of the first articles published on the topic of programming a computer for playing chess, and using a computer to solve the game.his process for having the computer decide on which move to make was a minimax procedure, based on an evaluation function of a given chess position. shannon gave a rough example of an evaluation function in which the value of the black position was subtracted from that of the white position. material was counted according to the usual chess piece relative value (1 point for a pawn, 3 points for a knight or bishop, 5 points for a rook, and 9 points for a queen). he considered some positional factors, subtracting point for each doubled pawn, backward pawn, and isolated pawn; mobility was incorporated by adding 0.1 point for each legal move available.
+
+
+=== shannon's maxim ===
+shannon formulated a version of kerckhoffs' principle as "the enemy knows the system". in this form it is known as "shannon's maxim".
+
+
+== commemorations ==
+
+
+=== shannon centenary ===
+the shannon centenary, 2016, marked the life and influence of claude elwood shannon on the hundredth anniversary of his birth on april 30, 1916. it was inspired in part by the alan turing year. an ad hoc committee of the ieee information theory society including christina fragouli, rdiger urbanke, michelle effros, lav varshney and sergio verd, coordinated worldwide events. the initiative was announced in the history panel at the 2015 ieee information theory workshop jerusalem and the ieee information theory society newsletter.a detailed listing of confirmed events was available on the website of the ieee information theory society.some of the planned activities included:
+
+bell labs hosted the first shannon conference on the future of the information age on april 2829, 2016, in murray hill, new jersey, to celebrate claude shannon and the continued impact of his legacy on society. the event includes keynote speeches by global luminaries and visionaries of the information age who will explore the impact of information theory on society and our digital future, informal recollections, and leading technical presentations on subsequent related work in other areas such as bioinformatics, economic systems, and social networks. there is also a student competition
+bell labs launched a web exhibit on april 30, 2016, chronicling shannon's hiring at bell labs (under an ndrc contract with us government), his subsequent work there from 1942 through 1957, and details of mathematics department. the exhibit also displayed bios of colleagues and managers during his tenure, as well as original versions of some of the technical memoranda which subsequently became well known in published form.
+the republic of macedonia is planning a commemorative stamp. a usps commemorative stamp is being proposed, with an active petition.
+a documentary on claude shannon and on the impact of information theory, the bit player, is being produced by sergio verd and mark levinson.
+a trans-atlantic celebration of both george boole's bicentenary and claude shannon's centenary that is being led by university college cork and the massachusetts institute of technology. a first event was a workshop in cork, when boole meets shannon, and will continue with exhibits at the boston museum of science and at the mit museum.
+many organizations around the world are holding observance events, including the boston museum of science, the heinz-nixdorf museum, the institute for advanced study, technische universitt berlin, university of south australia (unisa), unicamp (universidade estadual de campinas), university of toronto, chinese university of hong kong, cairo university, telecom paristech, national technical university of athens, indian institute of science, indian institute of technology bombay, indian institute of technology kanpur, nanyang technological university of singapore, university of maryland, university of illinois at chicago, cole polytechnique federale de lausanne, the pennsylvania state university (penn state), university of california los angeles, massachusetts institute of technology, chongqing university of posts and telecommunications, and university of illinois at urbana-champaign.
+a logo that appears on this page was crowdsourced on crowdspring.
+the math encounters presentation of may 4, 2016, at the national museum of mathematics in new york, titled saving face: information tricks for love and life, focused on shannon's work in information theory. a video recording and other material are available.
+
+
+== awards and honors list ==
+the claude e. shannon award was established in his honor; he was also its first recipient, in 1972.
+
+
+== selected works ==
+claude e. shannon: a symbolic analysis of relay and switching circuits, master's thesis, mit, 1937.
+claude e. shannon: "a mathematical theory of communication", bell system technical journal, vol. 27, pp. 379423, 623656, 1948 (abstract).
+claude e. shannon and warren weaver: the mathematical theory of communication. the university of illinois press, urbana, illinois, 1949. isbn 0-252-72548-4
+
+
+== see also ==
+
+
+== references ==
+
+
+== further reading ==
+rethnakaran pulikkoonattu eric w. weisstein: mathworld biography of shannon, claude elwood (19162001) shannon, claude elwood (19162001) from eric weisstein's world of scientific biography
+claude e. shannon: programming a computer for playing chess, philosophical magazine, ser.7, vol. 41, no. 314, march 1950. (available online under external links below)
+david levy: computer gamesmanship: elements of intelligent game design, simon & schuster, 1983. isbn 0-671-49532-1
+mindell, david a., "automation's finest hour: bell labs and automatic control in world war ii", ieee control systems, december 1995, pp. 7280.
+poundstone, william, fortune's formula, hill & wang, 2005, isbn 978-0-8090-4599-0
+gleick, james, the information: a history, a theory, a flood, pantheon, 2011, isbn 978-0-375-42372-7
+jimmy soni and rob goodman, a mind at play: how claude shannon invented the information age, simon and schuster, 2017, isbn 978-1476766683
+nahin, paul j., the logician and the engineer: how george boole and claude shannon create the information age, princeton university press, 2013, isbn 978-0691151007
+everett m. rogers, claude shannon's cryptography research during world war ii and the mathematical theory of communication, 1994 proceedings of ieee international carnahan conference on security technology, pp. 15, 1994. claude shannon's cryptography research during world war ii and the mathematical theory of communication
+
+
+== external links ==
+ media related to claude shannon at wikimedia commons
+guide to the claude elwood shannon papers at the library of congress
+a public lecture celebrating claude e. shannon sergio verdu, institute for advanced study on youtube
+claude elwood shannon (19162001) at the notices of the american mathematical society

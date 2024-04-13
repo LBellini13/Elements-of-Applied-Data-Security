@@ -12,7 +12,7 @@ from operator import xor
 '''Function to convert the list describing the feedback polynomial into a list 
 of boolean'''
 def poly_to_bool_list(poly):
-    bool_list = [True if coeff in poly else False 
+    bool_list = [1 if coeff in poly else 0 
                  for coeff in range(poly[-1] + 1)]
     return bool_list
 
@@ -24,7 +24,7 @@ def bool_list_to_poly(bool_list):
 
 '''Function to convert a 'bytes' variable into a list of boolean'''
 def bytes_to_bool_list(bytes_):
-    bool_list = [bool(byte & (1 << i)) for byte in bytes_
+    bool_list = [1 if byte & (1 << i) else 0 for byte in bytes_
                  for i in range(7, -1, -1)]
     return bool_list
 
@@ -33,7 +33,7 @@ def bool_list_to_bytes(bool_list):
     # Pad the bool_list with False values to ensure its length is a multiple of 8
     remainder = len(bool_list) % 8
     if remainder != 0:
-        bool_list = [False] * (8 - remainder) + bool_list
+        bool_list = [0] * (8 - remainder) + bool_list
 
     # Group the bool_list into bytes and convert each byte to an integer
     byte_list = []
@@ -47,7 +47,7 @@ def bool_list_to_bytes(bool_list):
     return bytes(byte_list)
 
 def right_shift(list, shift = 1):
-    return [False] * shift + list[:-shift]
+    return [0] * shift + list[:-shift]
 
 
 class LFSR():
@@ -135,17 +135,17 @@ class LFSR():
         
 def berlekamp_massey(b):
     m, r = 0, 1
-    p, q = [True], [True]
+    p, q = [1], [1]
     for tau in range(len(b)):
         # Discrepancy bit calculation
-        partial_and = [p[j] and b[tau-j] for j in range(m+1)]
-        d = reduce(xor, partial_and)
+        d = [p[j] and b[tau-j] for j in range(m+1)]
+        d = reduce(xor, d)
         if d:
             # Q*x^r calculation
-            qxr = ([False] * r) + q
+            qxr = ([0] * r) + q
             # Make sure that p and qxr have the same length padding them
-            qxr_padded = qxr + [False] * (len(p) - len(qxr))
-            p_padded = p + [False] * (len(qxr) - len(p))
+            qxr_padded = qxr + [0] * (len(p) - len(qxr))
+            p_padded = p + [0] * (len(qxr) - len(p))
             # Update step
             if 2*m <= tau:
                 p, q = [p_ ^ qxr_ for p_, qxr_ in zip(p_padded, qxr_padded)] , p
@@ -164,11 +164,13 @@ class ShrinkingGenerator():
         self.output = None
     
     def new_iteration(self):
-        bita = self.lfsrA.output
-        bits = self.lfsrS.output
-        # print(bita, bits)
+        # New iteration for lfsrA and lfsrS
         self.lfsrA.new_iteration()
         self.lfsrS.new_iteration()
+        # get the output bits of lfsrA and lfsrS
+        bita = self.lfsrA.output
+        bits = self.lfsrS.output
+        # If bits is true, bita can go through, otherwise no output is produced
         if bits:
             self.output = bita
         else:
@@ -185,7 +187,7 @@ class ShrinkingGenerator():
         print(f'\nHere are {N} iterations of the Shrinking Generator')
         output_list = []
         i = 0
-        # Execute the new_iteration function N times
+        # Execute the new_iteration until N valid output bits are produced
         while i < N:
             self.new_iteration()
             # Append the output to the output list

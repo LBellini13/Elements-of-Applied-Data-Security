@@ -100,7 +100,7 @@ class LFSR():
         return self.output
     
     def run_steps(self, N=1):
-        print(f'\nHere are {N} iterations of the LFSR')
+        print(f'\n{N} iterations of the LFSR have been computed')
         output_list = []
         # Execute the new_iteration function N times
         for _ in range(N):

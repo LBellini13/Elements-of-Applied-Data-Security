@@ -69,11 +69,11 @@ class LFSR():
         self.feedback = None
         
         # Polynomial and state used for calculations
-        print('LFSR Initialization')
+        # print('LFSR Initialization')
         self.bool_poly = poly_to_bool_list(self.poly)[1:]
-        print(f'poly: {self.bool_poly}')
+        # print(f'poly: {self.bool_poly}')
         self.bool_state = bytes_to_bool_list(self.state)[-self.length:]
-        print(f'init state: {self.bool_state}')
+        # print(f'init state: {self.bool_state}')
     
     '''General function calculating a new iteration of the LFSR. It is used in 
     the __next__, run_teps and cycle functions depending on the required 

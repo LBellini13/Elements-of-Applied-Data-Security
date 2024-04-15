@@ -3,12 +3,6 @@ from functools import reduce
 from itertools import compress
 from operator import xor
 
-# def string_to_bytes_state(string_state):
-#     int_state = int(string_state, 2)
-#     bytes_state = int_state.to_bytes(
-#         int(np.ceil(int_state.bit_length()/ 8)), 'big')
-#     return bytes_state
-
 '''Function to convert the list describing the feedback polynomial into a list 
 of boolean'''
 def poly_to_bool_list(poly):
@@ -184,7 +178,7 @@ class ShrinkingGenerator():
         return self.output
     
     def run_steps(self, N):
-        print(f'\nHere are {N} iterations of the Shrinking Generator')
+        print(f'\n{N} iterations of the Shrinking Generator have been computed')
         output_list = []
         i = 0
         # Execute the new_iteration until N valid output bits are produced

@@ -2,6 +2,7 @@ import numpy as np
 from functools import reduce
 from itertools import compress
 from operator import xor
+from scipy.special import erfc, gammaincc
 
 '''Function to convert the list describing the feedback polynomial into a list 
 of boolean'''
@@ -112,15 +113,16 @@ class LFSR():
         # Since we don't know a priori how long the cycle will be, we use an 
         # infinite loop and we stop it "manually" when the condition is 
         # satisfied
-        while True:
+        cycle_completed = False
+        while not cycle_completed:
             self.new_iteration()
             cycle_length += 1
             output_list.append(self.output)
             # If the LFSR reaches a state equal to the starting one, the cycle 
             # has been completed
             if self.state == starting_state:
-                print(f'\nCycle completed. {cycle_length} elements')
-                break
+                print(f'\nLFSR cycle completed. {cycle_length} elements')
+                cycle_completed = True
         return output_list
     
     def __str__(self):
@@ -175,6 +177,8 @@ class ShrinkingGenerator():
     
     def __next__(self):
         self.new_iteration()
+        while self.output is None:
+            self.new_iteration()
         return self.output
     
     def run_steps(self, N):
@@ -190,3 +194,54 @@ class ShrinkingGenerator():
                 i += 1
         return output_list
     
+def frequency_test(b):
+    # Significance level
+    alpha = 0.01
+    # Compute pi, s and p following the standard
+    pi = sum(b) / len(b)
+    s = 2 * (len(b) ** 0.5) * np.abs(pi - 0.5)
+    p = erfc(s / (2 ** 0.5))
+    # Return True (= random sequence) if p>alpha, otherwise return False
+    return p > alpha
+
+def block_frequency_test(b, M):
+    # Significance level
+    alpha  = 0.01
+    # Adapt length of b to the block size
+    b = b[:len(b) - len(b) % M]
+    pi = []
+    # Compute number of blocks
+    N = int(len(b) / M)
+    chi_square = 0
+    for i in range(N):
+        # Compute pi for each block
+        pi.append(sum(b[M*i:M*(i + 1)]) / M)
+        # Start computing chi_square
+        chi_square += (pi[i] - 0.5)**2
+    chi_square *= 4 * M
+    # Compute p following the standard
+    p = gammaincc(N/2, chi_square/2)
+    # Return True (= random sequence) if p>alpha, otherwise return False
+    return p > alpha
+
+def runs_test(b):
+    # Significance level
+    alpha = 0.01
+    # Execute frequency test
+    fr_res = frequency_test(b)
+    pi = sum(b) / len(b)
+    if fr_res:
+        # If frequency test was passed, proceed with run test
+        r_sum = 0
+        for i in range(len(b) -1):
+            # Compute XNOR on pairs of consecutive bits
+            r = not(b[i] ^ b[i+1])
+            r_sum += r
+        # Compute v and p following the standard
+        v = (1 + r_sum)/2/len(b)
+        p = erfc(np.abs(v - pi*(1-pi))/(pi*(1 - pi)/2**0.5))
+        # Return True (= random sequence) if p>alpha, otherwise return False
+        return p > alpha
+    else:
+        # Frequency test not passed, then return False(= not random sequence)
+        return False

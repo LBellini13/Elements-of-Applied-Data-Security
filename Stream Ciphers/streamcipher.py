@@ -95,7 +95,7 @@ class LFSR():
         return self.output
     
     def run_steps(self, N=1):
-        print(f'\n{N} iterations of the LFSR have been computed')
+        print(f'{N} iterations of the LFSR have been computed')
         output_list = []
         # Execute the new_iteration function N times
         for _ in range(N):
@@ -121,12 +121,12 @@ class LFSR():
             # If the LFSR reaches a state equal to the starting one, the cycle 
             # has been completed
             if self.state == starting_state:
-                print(f'\nLFSR cycle completed. {cycle_length} elements')
+                print(f'LFSR cycle completed. {cycle_length} elements')
                 cycle_completed = True
         return output_list
     
     def __str__(self):
-        print(f'\nFeedback polynomial: {self.poly}\nLFSR length: {self.length}\
+        print(f'Feedback polynomial: {self.poly}\nLFSR length: {self.length}\
             \nCurrent state: {self.state}')
         
 def berlekamp_massey(b):
@@ -182,7 +182,7 @@ class ShrinkingGenerator():
         return self.output
     
     def run_steps(self, N):
-        print(f'\n{N} iterations of the Shrinking Generator have been computed')
+        print(f'{N} iterations of the Shrinking Generator have been computed')
         output_list = []
         i = 0
         # Execute the new_iteration until N valid output bits are produced

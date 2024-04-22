@@ -194,6 +194,12 @@ class ShrinkingGenerator():
                 i += 1
         return output_list
     
+    def __str__(self):
+        print('LFSR_A:')
+        self.lfsrA.__str__()
+        print('\nLFSR_S:')
+        self.lfsrS.__str__()
+    
 def frequency_test(b):
     # Significance level
     alpha = 0.01

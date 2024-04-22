@@ -25,7 +25,7 @@ def bytes_to_bool_list(bytes_):
 
 '''Function to convert a list of boolean into a 'bytes' variable'''
 def bool_list_to_bytes(bool_list):
-    # Pad the bool_list with False values to ensure its length is a multiple of 8
+    # Pad the bool_list with 0 values to ensure its length is a multiple of 8
     remainder = len(bool_list) % 8
     if remainder != 0:
         bool_list = [0] * (8 - remainder) + bool_list
@@ -44,37 +44,32 @@ def bool_list_to_bytes(bool_list):
 def right_shift(list, shift = 1):
     return [0] * shift + list[:-shift]
 
-
 class LFSR():
     def __init__(self, poly, state = None):
         # Feedback polynomial initialization
         self.poly = sorted(poly)
         # LFSR length extraction
         self.length = int(self.poly[-1])
-        # LFSR internal state initialization
+        # LFSR internal state initialization. If no state is provided, it will
+        # be initialized to all 1s
         if state is None:
             int_all_ones = 2**self.length - 1
             self.state = (int_all_ones).to_bytes(int(np.ceil(self.length/8)),
                                                    byteorder = 'big')
         else:
             self.state = state
-        
         self.output = None
-        
         self.feedback = None
         
-        # Polynomial and state used for calculations
-        # print('LFSR Initialization')
+        # Polynomial and state used for calculations (list of booleans)
         self.bool_poly = poly_to_bool_list(self.poly)[1:]
-        # print(f'poly: {self.bool_poly}')
         self.bool_state = bytes_to_bool_list(self.state)[-self.length:]
-        # print(f'init state: {self.bool_state}')
     
     '''General function calculating a new iteration of the LFSR. It is used in 
-    the __next__, run_teps and cycle functions depending on the required 
+    the __next__, run_steps and cycle functions depending on the required 
     behavior'''
     def new_iteration(self):
-        # Set the output to the element '0' of the state list
+        # Set the output equal to the right-most state bit
         self.output = self.bool_state[-1]
         # Calculate the elementwise AND between state and poly lists
         state_poly_and = compress(self.bool_state, self.bool_poly)
@@ -84,7 +79,7 @@ class LFSR():
         # then inserting the feedback bit
         self.bool_state = right_shift(self.bool_state)
         self.bool_state[0] = self.feedback
-        # Set the state into 'bytes' format
+        # Save the new state into 'bytes' format
         self.state = bool_list_to_bytes(self.bool_state)
         
     def __iter__(self):
@@ -95,13 +90,13 @@ class LFSR():
         return self.output
     
     def run_steps(self, N=1):
-        print(f'{N} iterations of the LFSR have been computed')
         output_list = []
         # Execute the new_iteration function N times
         for _ in range(N):
             self.new_iteration()
             # Append the output to the output list
             output_list.append(self.output)
+        print(f'{N} iterations of the LFSR have been computed')
         return output_list
     
     
@@ -109,10 +104,6 @@ class LFSR():
         output_list = []
         starting_state = self.state
         cycle_length = 0
-        
-        # Since we don't know a priori how long the cycle will be, we use an 
-        # infinite loop and we stop it "manually" when the condition is 
-        # satisfied
         cycle_completed = False
         while not cycle_completed:
             self.new_iteration()
@@ -163,7 +154,7 @@ class ShrinkingGenerator():
         # New iteration for lfsrA and lfsrS
         self.lfsrA.new_iteration()
         self.lfsrS.new_iteration()
-        # get the output bits of lfsrA and lfsrS
+        # Get the output bits of lfsrA and lfsrS
         bita = self.lfsrA.output
         bits = self.lfsrS.output
         # If bits is true, bita can go through, otherwise no output is produced
@@ -182,7 +173,6 @@ class ShrinkingGenerator():
         return self.output
     
     def run_steps(self, N):
-        print(f'{N} iterations of the Shrinking Generator have been computed')
         output_list = []
         i = 0
         # Execute the new_iteration until N valid output bits are produced
@@ -192,6 +182,7 @@ class ShrinkingGenerator():
             if self.output is not None:
                 output_list.append(self.output)
                 i += 1
+        print(f'{N} iterations of the Shrinking Generator have been computed')
         return output_list
     
     def __str__(self):
@@ -217,16 +208,16 @@ def block_frequency_test(b, M):
     b = b[:len(b) - len(b) % M]
     pi = []
     # Compute number of blocks
-    N = int(len(b) / M)
+    n = int(len(b) / M)
     chi_square = 0
-    for i in range(N):
+    for i in range(n):
         # Compute pi for each block
         pi.append(sum(b[M*i:M*(i + 1)]) / M)
         # Start computing chi_square
         chi_square += (pi[i] - 0.5)**2
     chi_square *= 4 * M
     # Compute p following the standard
-    p = gammaincc(N/2, chi_square/2)
+    p = gammaincc(n/2, chi_square/2)
     # Return True (= random sequence) if p>alpha, otherwise return False
     return p > alpha
 
@@ -245,7 +236,7 @@ def runs_test(b):
             r_sum += r
         # Compute v and p following the standard
         v = (1 + r_sum)/2/len(b)
-        p = erfc(np.abs(v - pi*(1-pi))/(pi*(1 - pi)/2**0.5))
+        p = erfc(np.abs(v - pi*(1-pi))/(pi*(1 - pi)*(2**0.5)))
         # Return True (= random sequence) if p>alpha, otherwise return False
         return p > alpha
     else:

@@ -1,0 +1,9 @@
+# Define the range for your keys
+start_range = 0
+end_range = 10  # Adjust as needed
+
+# Create the dictionary using a dictionary comprehension
+my_dict = {f"{i}-{i+1}": None for i in range(start_range, end_range)}
+
+# Print the dictionary
+print(my_dict)

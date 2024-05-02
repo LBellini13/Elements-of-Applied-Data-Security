@@ -1,5 +1,5 @@
 import numpy as np
-from matplotlib.image import imread, imsave
+from matplotlib.image import imsave
 import matplotlib.pyplot as plt
 from Crypto.Cipher import AES
 
@@ -21,30 +21,29 @@ def hamming(textA, textB):
     distance = sum([bin(byte).count('1') for byte in AxorB])
     return distance
 
-def aes_mcs_diffusion(aes, ref_plaintext, ref_ciphertext, it):  
+def mcs_diffusion(cipher, ref_plaintext, ref_ciphertext, it):  
     dist = []
     for _ in range(it):
-        plaintext = flip_bit(ref_plaintext, np.random.randint(8*AES.block_size))
-        ciphertext = aes.encrypt(plaintext)
-        dist.append(hamming(ref_ciphertext, ciphertext)/8/AES.block_size*100)
+        plaintext = flip_bit(ref_plaintext, np.random.randint(8*len(ref_plaintext)))
+        ciphertext = cipher.encrypt(plaintext)
+        dist.append(hamming(ref_ciphertext, ciphertext)/8/len(ref_ciphertext)*100)
     return dist
 
-def aes_mcs_confusion(ref_key, key_length, ref_plaintext, ref_ciphertext, it):  
+def mcs_confusion(cipher_type, ref_key, ref_plaintext, ref_ciphertext, it, drop = None):  
     dist = []
-    for _ in range(it):
-        key = flip_bit(ref_key, np.random.randint(8*key_length))
-        aes = AES.new(key, AES.MODE_ECB)
-        ciphertext = aes.encrypt(ref_plaintext)
-        dist.append(hamming(ref_ciphertext, ciphertext)/8/AES.block_size*100)
+    if cipher_type == 'aes':
+        for _ in range(it):
+            key = flip_bit(ref_key, np.random.randint(8*len(ref_key)))
+            aes = AES.new(key, AES.MODE_ECB)
+            ciphertext = aes.encrypt(ref_plaintext)
+            dist.append(hamming(ref_ciphertext, ciphertext)/8/len(ref_ciphertext)*100)
+    elif cipher_type == 'rc4':
+        for _ in range(it):
+            key = flip_bit(ref_key, np.random.randint(8*len(ref_key)))
+            rc4 = RC4(key, drop)
+            ciphertext = rc4.encrypt(ref_plaintext)
+            dist.append(hamming(ref_ciphertext, ciphertext)/8/len(ref_ciphertext)*100)
     return dist
-
-def key_scheduling_algorithm(key):
-    p = list(range(256))
-    j = 0
-    for i in range(256):
-        j = (j + p[i] + key[i % len(key)]) % 256
-        p[i], p[j] = p[j], p[i]
-    return p
 
 
 class RC4():
@@ -53,10 +52,17 @@ class RC4():
         self.drop = drop
         self.dropped_bytes = 0
         self.i, self.j = 0, 0
-        self.p = key_scheduling_algorithm(self.key)
-        print(self.p)
+        self.p = self.KSA()
         self.out = None
         self.out_int = None
+
+    def KSA(self):
+        p = list(range(256))
+        j = 0
+        for i in range(256):
+            j = (j + p[i] + self.key[i % len(self.key)]) % 256
+            p[i], p[j] = p[j], p[i]
+        return p
 
     def prga(self):
         self.i = (self.i + 1) % 256
@@ -86,7 +92,7 @@ class RC4():
             self.prga()
             self.out = self.out_int.to_bytes((self.out_int // 256 ) + 1, byteorder='big')
             keystream.append(self.out_int)
-        return bytes(keystream)
+        return keystream
     
     def encrypt(self, plaintext):
         keystream = self.run_steps(len(plaintext))

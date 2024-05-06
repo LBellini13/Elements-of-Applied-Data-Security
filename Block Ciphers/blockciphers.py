@@ -20,7 +20,7 @@ def flip_bit(text, ibit):
     # Convert the input into bytearray format (bytes is immutable)
     flipped_text = bytearray(text) 
     # Flip the bit
-    flipped_text[ibit//8] ^= 1 << (ibit%8) 
+    flipped_text[ibit // 8] ^= 1 << (ibit % 8) 
     return bytes(flipped_text)
 
 def hamming(textA, textB):
@@ -87,7 +87,7 @@ class RC4():
             p[i], p[j] = p[j], p[i]
         return p
 
-    def prga(self):
+    def PRGA(self):
         self.i = (self.i + 1) % 256
         self.j = (self.j + self.p[self.i]) % 256
         self.p[self.i], self.p[self.j] = self.p[self.j], self.p[self.i]
@@ -97,7 +97,7 @@ class RC4():
         # Compute new iterations and discard first bytes (self.out is not updated)
         if self.drop is not None:
             while self.dropped_bytes < self.drop:
-                self.prga()
+                self.PRGA()
                 self.dropped_bytes += 1
 
     def __iter__(self):
@@ -106,8 +106,9 @@ class RC4():
     def __next__(self):
         # Drop bytes
         self.drop_bytes()
-        self.prga()
-        # COnvert from int to bytes
+        # Compute new iteration
+        self.PRGA()
+        # Convert from int to bytes
         self.out = self.out_int.to_bytes((self.out_int // 256 ) + 1, byteorder='big')
         return self.out
     
@@ -116,10 +117,12 @@ class RC4():
         # Drop bytes
         self.drop_bytes()
         for _ in range(n):
-            self.prga()
+            # Compute new iteration
+            self.PRGA()
+            # Convert from int to bytes
             self.out = self.out_int.to_bytes((self.out_int // 256 ) + 1, byteorder='big')
             keystream.append(self.out_int)
-        return keystream
+        return bytes(keystream)
     
     def encrypt(self, plaintext):
         # Produce a keystream as long as the plaintext

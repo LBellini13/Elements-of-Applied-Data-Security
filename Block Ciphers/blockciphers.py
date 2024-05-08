@@ -69,17 +69,24 @@ def mcs_confusion(cipher_type, ref_key, ref_plaintext, ref_ciphertext, it, drop 
 
 class RC4():
     def __init__(self, key, drop = None):
+        '''
+        Class implementing Rivest Cipher 4\n
+        inputs:\n
+            key-> RC4 key (bytes)\n
+            drop-> number of bytes to drop at the beginning (default = None)
+        '''
         self.key = key
         self.drop = drop
         self.dropped_bytes = 0
         # Index pointers
         self.i, self.j = 0, 0
         # Initialize the secret permutation using KSA
-        self.p = self.KSA()
+        self.p = self._KSA()
         self.out = None
         self.out_int = None
 
-    def KSA(self):
+    def _KSA(self):
+        '''Key scheduling algorithm'''
         p = list(range(256))
         j = 0
         for i in range(256):
@@ -87,17 +94,18 @@ class RC4():
             p[i], p[j] = p[j], p[i]
         return p
 
-    def PRGA(self):
+    def _PRGA(self):
+        '''Pseudorandom number generation algorithm'''
         self.i = (self.i + 1) % 256
         self.j = (self.j + self.p[self.i]) % 256
         self.p[self.i], self.p[self.j] = self.p[self.j], self.p[self.i]
         self.out_int = self.p[(self.p[self.i] + self.p[self.j]) % 256]
 
-    def drop_bytes(self):
+    def _drop_bytes(self):
         # Compute new iterations and discard first bytes (self.out is not updated)
         if self.drop is not None:
             while self.dropped_bytes < self.drop:
-                self.PRGA()
+                self._PRGA()
                 self.dropped_bytes += 1
 
     def __iter__(self):
@@ -105,36 +113,53 @@ class RC4():
 
     def __next__(self):
         # Drop bytes
-        self.drop_bytes()
+        self._drop_bytes()
         # Compute new iteration
-        self.PRGA()
+        self._PRGA()
         # Convert from int to bytes
         self.out = self.out_int.to_bytes((self.out_int // 256 ) + 1, byteorder='big')
         return self.out
     
-    def run_steps(self, n):
+    def _run_steps(self, n):
+        '''
+        Method that produces an output keystream of N bytes\n
+        input:\n
+            n-> number of bytes to be produced
+        '''
         keystream = []
         # Drop bytes
-        self.drop_bytes()
+        self._drop_bytes()
         for _ in range(n):
             # Compute new iteration
-            self.PRGA()
+            self._PRGA()
             # Convert from int to bytes
             self.out = self.out_int.to_bytes((self.out_int // 256 ) + 1, byteorder='big')
             keystream.append(self.out_int)
         return bytes(keystream)
     
     def encrypt(self, plaintext):
+        '''
+        Encryption function\n
+        input:\n
+            plaintext-> plaintext to encrypt (bytes)
+        '''
         # Produce a keystream as long as the plaintext
-        keystream = self.run_steps(len(plaintext))
+        keystream = self._run_steps(len(plaintext))
         # Bitwise XOR between keystream and plaintext
         ciphertext = bytes([pb ^ kb for pb, kb in zip(plaintext, keystream)])
         return ciphertext
     
     def decrypt(self, ciphertext):
+        '''
+        Decryption function\n
+        input:\n
+            ciphertext-> ciphertext to decrypt (bytes)
+        '''
         # Produce a keystream as long as the plaintext
-        keystream = self.run_steps(len(ciphertext))
+        keystream = self._run_steps(len(ciphertext))
         # Bitwise XOR between keystream and ciphertext
         plaintext = bytes([cb ^ kb for cb, kb in zip(ciphertext, keystream)])
         return plaintext
     
+    def __str__(self):
+        return f'key: {self.key}, drop: {self.drop}'

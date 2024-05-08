@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib.image import imsave
 import matplotlib.pyplot as plt
 from Crypto.Cipher import AES
+import math
 
 def aes_image_encryption(aes_cipher, mode, image):
     # Convert the matrix into a 1D vector and then convert into bytes
@@ -117,7 +118,7 @@ class RC4():
         # Compute new iteration
         self._PRGA()
         # Convert from int to bytes
-        self.out = self.out_int.to_bytes((self.out_int // 256 ) + 1, byteorder='big')
+        self.out = self.out_int.to_bytes(math.ceil(self.out_int.bit_length()/8), byteorder='big')
         return self.out
     
     def _run_steps(self, n):
@@ -133,7 +134,7 @@ class RC4():
             # Compute new iteration
             self._PRGA()
             # Convert from int to bytes
-            self.out = self.out_int.to_bytes((self.out_int // 256 ) + 1, byteorder='big')
+            self.out = self.out_int.to_bytes(math.ceil(self.out_int.bit_length()/8), byteorder='big')
             keystream.append(self.out_int)
         return bytes(keystream)
     

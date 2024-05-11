@@ -8,41 +8,41 @@ def ExtendedEuclideanAlgorithm(a, m):
     gcd(a, m) = sa + tm. If gcd(a, m) = 1, then s is the inverse of a with
     respect to multiplication modulo m.
     --------
-    a: int
-    m: int
+    a: int, >= 0
+    m: int, >= 0
         m > a
     --------
     tuple of int
         gcd(a, m), s and t so that sa + tm = gcd(a, m)
-        
     '''
+    # Ensure that m is bigger than a
+    m, a = max(a, m), min(a, m)
 
-    # (r0, r1) = (m, a)
-    # (t0, t1, s0, s1) = (1, 0, 0, 1)
-
-    # while (r0 != 0):
-    #     (q, r1, r0) = (r1 // r0, r0, r1 % r0)
-    #     (t0, t1) = (t1, t0 - q * t1)
-    #     (s0, s1) = (s1, s0 - q * s1)
-
-    # if(t0 < 0):
-    #     t0 = t0 + m
-    # return r1, t0, s0
-
+    if a == 0:
+        return m, 0, 1
+    elif m == 0:
+        return a, 1, 0
+    
     r = [m, a]
     s = [0, 1]
     t = [1, 0]
-    q = [0, 0]
     i = 1
     while r[-1] != 0:
         i += 1
+        # Compute new quotient
+        q = r[i-2] // r[i-1]
+        # COmpute new remainder
         r.append(r[i-2] % r[i-1])
-        q.append((r[i-2] - r[i])/r[i-1])
-        s.append(s[i-2] - q[i]*s[i-1])
-        t.append(t[i-2] - q[i]*t[i-1])
-    if s[i-1] < 0:
+        # Update s and t
+        s.append(s[i-2] - q*s[i-1])
+        t.append(t[i-2] - q*t[i-1])
+    
+    # If s is negative and the gcd is 1, compute s+m to achieve the correct
+    # modular inverse
+    if s[i-1] < 0 and r[i-1] == 1:
         s[i-1] = m + s[i-1]
-    return r[i-1], int(s[i-1]), int(t[i-1])
+
+    return r[i-1], s[i-1], t[i-1]
 
 def int_to_bits(n):
     bits = []
@@ -103,8 +103,15 @@ def MillerRabin(p, N):
         True -> p is likely prime\n
         False-> p is surely composite
     '''
+
+    # Manage cases for which x = random.randint(2, p-2) doesn't make sense   
+    if p <= 1:
+        return False
+    if p == 2 or p == 3:
+        return True
     if p % 2 == 0:
         return False
+    
     q, r = find_q_r(p)
     for _ in range(N):
         # print('------------------')
@@ -128,7 +135,7 @@ class RSA:
     Class implementing RSA\n
     --------
     Attributes:\n
-        length: int (default = None)
+        length: int (default = 512)
             modulus' desired number of bits
         n: int (default = None)
             RSA modulus. 1st element of the public key
@@ -140,6 +147,10 @@ class RSA:
         _modulus:
             tuple of int
                 p and q (prime numbers) and n=p*q\n
+    --------
+        _draw_random_prime_number:
+            int
+                random prime number tested with Miller Rabin Primality test
     --------    
         _find_e_d:
             tuple of int
@@ -163,13 +174,18 @@ class RSA:
 
     def __init__(self, length = None, n = None, e = None, debug = False):
         self.debug = debug
-        if length is not None:
-            self.length = length
+        do_encrypt = (self.debug and n is None and e is None) \
+            or (not self.debug and length is not None)
+        if do_encrypt:
+            # print('ENCRYPT')
+            if length is not None:
+                self.length = length
             self.p, self.q, self.n, self.m = self._modulus()
             self.e, self.d = self._find_e_d()
             self.pub_key = (self.n, self.e)
             self.priv_key = (self.n, self.d)
         else:
+            # print('DECRYPT')
             self.n = n
             self.e = e
             self.pub_key = (self.n, self.e)
@@ -186,18 +202,23 @@ class RSA:
         if not self.debug:
             n = 0 
             while n.bit_length() != self.length:
-                p = self.draw_random_prime_number()
-                q = self.draw_random_prime_number()
+                # print('DEBUG --> looking for p')
+                p = self._draw_random_prime_number()
+                # print('DEBUG --> looking for q')
+                q = self._draw_random_prime_number()
                 if p == q:
                     continue
+                n = p*q
         else: # DEBUG branch
-            p = 0x1083e935648922e73
-            q = 0x1cc1a881e36821695
-        n = p * q
+            p = 335895919357171
+            q = 744053548667773
+            n = p * q
+        # print('DEBUG --> n computed')
         m = (p-1) * (q -1)
+        # print('DEBUG --> m computed')
         return p, q, n, m
     
-    def draw_random_prime_number(self):
+    def _draw_random_prime_number(self):
         n = random.getrandbits(self.length//2)
         while not MillerRabin(n, 500):
             n = random.getrandbits(self.length//2)
@@ -212,30 +233,48 @@ class RSA:
         '''
         r = 0
         e = 1
+        # print('DEBUG --> looking for e and d')
         while  r != 1  and e < self.m:
             # Draw random e
             # e = np.random.randint(2, m - )
             e += 1  # e is alway sthe minimum. Done for repeatability
             r, d, _ = ExtendedEuclideanAlgorithm(e, self.m)
+        # print('DEBUG --> e and d computed')
         return e, d
 
     def encrypt(self, plaintext):
         if not self.debug:
             plaintext_int = int.from_bytes(plaintext, byteorder='big')
-            print(f'plaintext in int format: {plaintext_int}')
+            # print(f'pl int: {plaintext_int}')
+            # print(f'n: {self.n}')
+            if plaintext_int > self.n:
+                raise ValueError('ERROR -> the plaintext to encrypt is too long. '\
+                                 'Try with a shorter one')
+            # print('DEBUG --> encrypting')
             ciphertext_int = SquareAndMultiply(plaintext_int, self.e, self.n)
             ciphertext = ciphertext_int.to_bytes(math.ceil(
                 ciphertext_int.bit_length()/8), byteorder='big')
         else: # DEBUG branch
+            # print(f'pl int: {plaintext}')
+            # print(f'n: {self.n}')
+            if plaintext > self.n:
+                raise ValueError('ERROR -> the number to encrypt is bigger than n. '\
+                                 'Try with a smaller one')
             ciphertext = SquareAndMultiply(plaintext, self.e, self.n)
         return ciphertext
     
     def decrypt(self, ciphertext):
         if not self.debug:
             ciphertext_int = int.from_bytes(ciphertext, byteorder='big')
+            # print(f'cip int: {ciphertext_int}')
+            # print(f'n dec: {self.n}')
             plaintext_int = SquareAndMultiply(ciphertext_int, self.d, self.n)
+            # print(f'pl int dec: {plaintext_int}')
+            # print('DEBUG --> decrypting')
             plaintext = plaintext_int.to_bytes(math.ceil(
                 plaintext_int.bit_length()/8), byteorder='big')
         else: # DEBUG branch
+            # print(f'cip: {ciphertext}')
+            # print(f'n dec: {self.n}')
             plaintext = SquareAndMultiply(ciphertext, self.d, self.n)
         return plaintext

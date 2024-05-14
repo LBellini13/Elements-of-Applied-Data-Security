@@ -103,6 +103,7 @@ def MillerRabin(p, N):
         True -> p is likely prime\n
         False-> p is surely composite
     '''
+    # print(f'n: {p}')
 
     # Manage cases for which x = random.randint(2, p-2) doesn't make sense   
     if p <= 1:
@@ -113,6 +114,7 @@ def MillerRabin(p, N):
         return False
     
     q, r = find_q_r(p)
+    # print(f'q: {q}, r: {r}')
     for _ in range(N):
         # print('------------------')
         x = random.randint(2, p-2)
@@ -120,13 +122,16 @@ def MillerRabin(p, N):
         y = SquareAndMultiply(x, q, p)
         # print(f'x^q\\p = {y}')
         if y == 1 or y == p-1:
+            # print('AAAAAAAAAAAAAAAAAAAA')
             continue
         for _ in range(r):
             y = SquareAndMultiply(y, 2, p)
             # print(f'y^2\\p = {y}')
             if y == p-1:
+                # print('BBBBBBBBBBBBBBBBBBBB')
                 break
         else:
+            # print('CCCCCCCCCCCCCC')
             return False
     return True
 
@@ -220,7 +225,11 @@ class RSA:
     
     def _draw_random_prime_number(self):
         n = random.getrandbits(self.length//2)
-        while not MillerRabin(n, 500):
+        # In the worst case scenario, the probability that Miller Rabin Test 
+        # decalres as prime a composite number is 1/4, meaning that after k iterations
+        # the probability of error is 4^(-k). 100 iterations are more than
+        # sufficient for our application.
+        while not MillerRabin(n, 100):
             n = random.getrandbits(self.length//2)
         return n
     
@@ -249,7 +258,7 @@ class RSA:
             # print(f'n: {self.n}')
             if plaintext_int > self.n:
                 raise ValueError('ERROR -> the plaintext to encrypt is too long. '\
-                                 'Try with a shorter one')
+                                 'Try with a shorter one.')
             # print('DEBUG --> encrypting')
             ciphertext_int = SquareAndMultiply(plaintext_int, self.e, self.n)
             ciphertext = ciphertext_int.to_bytes(math.ceil(
@@ -259,7 +268,7 @@ class RSA:
             # print(f'n: {self.n}')
             if plaintext > self.n:
                 raise ValueError('ERROR -> the number to encrypt is bigger than n. '\
-                                 'Try with a smaller one')
+                                 'Try with a smaller one.')
             ciphertext = SquareAndMultiply(plaintext, self.e, self.n)
         return ciphertext
     
@@ -278,3 +287,22 @@ class RSA:
             # print(f'n dec: {self.n}')
             plaintext = SquareAndMultiply(ciphertext, self.d, self.n)
         return plaintext
+    
+def probability_to_be_prime(length, iter):
+    lower_limit = 2**(length // 2)
+    upper_limit = 2**(length // 2 +1)
+
+    prime_counter = 0
+
+    for _ in range(iter):
+        n = np.random.randint(lower_limit, upper_limit)
+        if n % 2 == 0:
+            n += 1
+        # In the worst case scenario, the probability that Miller Rabin Test 
+        # decalres as prime a composite number is 1/4, meaning that after k iterations
+        # the probability of error is 4^(-k). 100 iterations are more than
+        # sufficient for our application.
+        if MillerRabin(n, 100):
+            prime_counter += 1
+    return prime_counter/iter
+    

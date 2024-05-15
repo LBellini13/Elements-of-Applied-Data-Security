@@ -288,21 +288,41 @@ class RSA:
             plaintext = SquareAndMultiply(ciphertext, self.d, self.n)
         return plaintext
     
-def probability_to_be_prime(length, iter):
-    lower_limit = 2**(length // 2)
-    upper_limit = 2**(length // 2 +1)
-
+def probability_to_be_prime(L, threshold, init_iter, max_iter):
+    lower_limit = 2**(L // 2)
+    upper_limit = 2**(L // 2 +1)
+    curr_prob, prev_prob = 0, 0
+    estimations = {}
     prime_counter = 0
+    iter = init_iter
+    prev_rel_diff, curr_rel_diff = float('inf'), float('inf')
+    while iter <= max_iter and (curr_rel_diff >= threshold or prev_rel_diff >= threshold):
+        for _ in range(int(iter)):
+            n = random.randint(lower_limit, upper_limit)
+            # If the number is even add 1 and make it odd -> we don't lose
+            # an iteration
+            if n % 2 == 0:
+                n += 1
+            # In the worst case scenario, the probability that Miller Rabin Test 
+            # decalres as prime a composite number is 1/4, meaning that after k iterations
+            # the probability of error is 4^(-k). 100 iterations are more than
+            # sufficient for our application.
+            if MillerRabin(n, 100):
+                prime_counter += 1
 
-    for _ in range(iter):
-        n = np.random.randint(lower_limit, upper_limit)
-        if n % 2 == 0:
-            n += 1
-        # In the worst case scenario, the probability that Miller Rabin Test 
-        # decalres as prime a composite number is 1/4, meaning that after k iterations
-        # the probability of error is 4^(-k). 100 iterations are more than
-        # sufficient for our application.
-        if MillerRabin(n, 100):
-            prime_counter += 1
-    return prime_counter/iter
+        prev_prob = curr_prob
+        curr_prob = prime_counter/iter
+        estimations[iter] = curr_prob
+        prev_rel_diff= curr_rel_diff
+        if prev_prob == 0:
+            curr_rel_diff = float('inf')
+        else:
+            # Compute the relative difference between two consecutive
+            # estimations
+            curr_rel_diff = np.abs(curr_prob-prev_prob)/prev_prob
+        print(f'rel diff: {curr_rel_diff}')
+        # Double the number of iterations
+        iter *= 2
+
+    return estimations, curr_prob
     

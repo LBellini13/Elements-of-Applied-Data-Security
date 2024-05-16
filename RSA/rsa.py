@@ -288,7 +288,7 @@ class RSA:
             plaintext = SquareAndMultiply(ciphertext, self.d, self.n)
         return plaintext
     
-def probability_to_be_prime(L, threshold, init_iter, max_iter):
+def ProbabilityToBePrime(L, threshold, init_iter, max_iter):
     lower_limit = 2**(L // 2)
     upper_limit = 2**(L // 2 +1)
     curr_prob, prev_prob = 0, 0

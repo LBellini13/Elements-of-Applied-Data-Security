@@ -320,9 +320,9 @@ def ProbabilityToBePrime(L, threshold, init_iter, max_iter):
             # Compute the relative difference between two consecutive
             # estimations
             curr_rel_diff = np.abs(curr_prob-prev_prob)/prev_prob
-        print(f'rel diff: {curr_rel_diff}')
+        # print(f'rel diff: {curr_rel_diff}')
         # Double the number of iterations
-        iter *= 2
+        iter *= 1.5
 
     return estimations, curr_prob
     

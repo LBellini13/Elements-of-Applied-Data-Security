@@ -289,6 +289,24 @@ class RSA:
         return plaintext
     
 def ProbabilityToBePrime(L, threshold, init_iter, max_iter):
+    '''
+    Estimates the probability that an odd random integer in the interval 
+    [2^L; 2^(L+1)] is prime exploting the Monte Carlo Method.
+    --------
+    L, int
+        define the interval
+    threshold, int
+        minimum relative deviation between two consecutive estimations
+    init_iter, int
+        initial amount of iterations for the Monte Carlo simulation
+    max_iter, int
+        maximum number of iterations for the Monte Carlo simulation
+    --------
+    dict
+        iterations and corresponding probability estimations
+    float
+        probability estimation
+    '''
     lower_limit = 2**(L // 2)
     upper_limit = 2**(L // 2 +1)
     curr_prob, prev_prob = 0, 0
@@ -320,9 +338,8 @@ def ProbabilityToBePrime(L, threshold, init_iter, max_iter):
             # Compute the relative difference between two consecutive
             # estimations
             curr_rel_diff = np.abs(curr_prob-prev_prob)/prev_prob
-        # print(f'rel diff: {curr_rel_diff}')
         # Double the number of iterations
-        iter *= 1.5
+        iter *= 2
 
     return estimations, curr_prob
     

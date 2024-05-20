@@ -31,7 +31,7 @@ def ExtendedEuclideanAlgorithm(a, m):
         i += 1
         # Compute new quotient
         q = r[i-2] // r[i-1]
-        # COmpute new remainder
+        # Compute new remainder
         r.append(r[i-2] % r[i-1])
         # Update s and t
         s.append(s[i-2] - q*s[i-1])
@@ -97,13 +97,12 @@ def MillerRabin(p, N):
     p: int
         number to evaluate
     N: int
-        number if iterations
+        number of iterations
     --------
     bool
         True -> p is likely prime\n
         False-> p is surely composite
     '''
-    # print(f'n: {p}')
 
     # Manage cases for which x = random.randint(2, p-2) doesn't make sense   
     if p <= 1:
@@ -114,24 +113,16 @@ def MillerRabin(p, N):
         return False
     
     q, r = find_q_r(p)
-    # print(f'q: {q}, r: {r}')
     for _ in range(N):
-        # print('------------------')
         x = random.randint(2, p-2)
-        # print(f'x = {x}')
         y = SquareAndMultiply(x, q, p)
-        # print(f'x^q\\p = {y}')
         if y == 1 or y == p-1:
-            # print('AAAAAAAAAAAAAAAAAAAA')
             continue
         for _ in range(r):
             y = SquareAndMultiply(y, 2, p)
-            # print(f'y^2\\p = {y}')
             if y == p-1:
-                # print('BBBBBBBBBBBBBBBBBBBB')
                 break
         else:
-            # print('CCCCCCCCCCCCCC')
             return False
     return True
 
@@ -182,7 +173,6 @@ class RSA:
         do_encrypt = (self.debug and n is None and e is None) \
             or (not self.debug and length is not None)
         if do_encrypt:
-            # print('ENCRYPT')
             if length is not None:
                 self.length = length
             self.p, self.q, self.n, self.m = self._modulus()
@@ -190,7 +180,6 @@ class RSA:
             self.pub_key = (self.n, self.e)
             self.priv_key = (self.n, self.d)
         else:
-            # print('DECRYPT')
             self.n = n
             self.e = e
             self.pub_key = (self.n, self.e)
@@ -207,9 +196,7 @@ class RSA:
         if not self.debug:
             n = 0 
             while n.bit_length() != self.length:
-                # print('DEBUG --> looking for p')
                 p = self._draw_random_prime_number()
-                # print('DEBUG --> looking for q')
                 q = self._draw_random_prime_number()
                 if p == q:
                     continue
@@ -218,15 +205,13 @@ class RSA:
             p = 335895919357171
             q = 744053548667773
             n = p * q
-        # print('DEBUG --> n computed')
         m = (p-1) * (q -1)
-        # print('DEBUG --> m computed')
         return p, q, n, m
     
     def _draw_random_prime_number(self):
         n = random.getrandbits(self.length//2)
         # In the worst case scenario, the probability that Miller Rabin Test 
-        # decalres as prime a composite number is 1/4, meaning that after k iterations
+        # declares as prime a composite number is 1/4, meaning that after k iterations
         # the probability of error is 4^(-k). 100 iterations are more than
         # sufficient for our application.
         while not MillerRabin(n, 100):
@@ -242,30 +227,22 @@ class RSA:
         '''
         r = 0
         e = 1
-        # print('DEBUG --> looking for e and d')
         while  r != 1  and e < self.m:
             # Draw random e
-            # e = np.random.randint(2, m - )
-            e += 1  # e is alway sthe minimum. Done for repeatability
+            e += 1  # e is always the minimum. Done for repeatability
             r, d, _ = ExtendedEuclideanAlgorithm(e, self.m)
-        # print('DEBUG --> e and d computed')
         return e, d
 
     def encrypt(self, plaintext):
         if not self.debug:
             plaintext_int = int.from_bytes(plaintext, byteorder='big')
-            # print(f'pl int: {plaintext_int}')
-            # print(f'n: {self.n}')
             if plaintext_int > self.n:
                 raise ValueError('ERROR -> the plaintext to encrypt is too long. '\
                                  'Try with a shorter one.')
-            # print('DEBUG --> encrypting')
             ciphertext_int = SquareAndMultiply(plaintext_int, self.e, self.n)
             ciphertext = ciphertext_int.to_bytes(math.ceil(
                 ciphertext_int.bit_length()/8), byteorder='big')
         else: # DEBUG branch
-            # print(f'pl int: {plaintext}')
-            # print(f'n: {self.n}')
             if plaintext > self.n:
                 raise ValueError('ERROR -> the number to encrypt is bigger than n. '\
                                  'Try with a smaller one.')
@@ -275,16 +252,10 @@ class RSA:
     def decrypt(self, ciphertext):
         if not self.debug:
             ciphertext_int = int.from_bytes(ciphertext, byteorder='big')
-            # print(f'cip int: {ciphertext_int}')
-            # print(f'n dec: {self.n}')
             plaintext_int = SquareAndMultiply(ciphertext_int, self.d, self.n)
-            # print(f'pl int dec: {plaintext_int}')
-            # print('DEBUG --> decrypting')
             plaintext = plaintext_int.to_bytes(math.ceil(
                 plaintext_int.bit_length()/8), byteorder='big')
         else: # DEBUG branch
-            # print(f'cip: {ciphertext}')
-            # print(f'n dec: {self.n}')
             plaintext = SquareAndMultiply(ciphertext, self.d, self.n)
         return plaintext
     

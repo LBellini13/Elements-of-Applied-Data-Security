@@ -230,7 +230,7 @@ def runs_test(b):
     if fr_res:
         # If frequency test was passed, proceed with run test
         r_sum = 0
-        for i in range(len(b) -1):
+        for i in range(len(b) - 1):
             # Compute XNOR on pairs of consecutive bits
             r = not(b[i] ^ b[i+1])
             r_sum += r

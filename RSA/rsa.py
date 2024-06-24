@@ -31,7 +31,7 @@ def ExtendedEuclideanAlgorithm(a, m):
         i += 1
         # Compute new quotient
         q = r[i-2] // r[i-1]
-        # COmpute new remainder
+        # Compute new remainder
         r.append(r[i-2] % r[i-1])
         # Update s and t
         s.append(s[i-2] - q*s[i-1])
@@ -97,7 +97,7 @@ def MillerRabin(p, N):
     p: int
         number to evaluate
     N: int
-        number if iterations
+        number of iterations
     --------
     bool
         True -> p is likely prime\n
@@ -114,16 +114,12 @@ def MillerRabin(p, N):
     
     q, r = find_q_r(p)
     for _ in range(N):
-        # print('------------------')
         x = random.randint(2, p-2)
-        # print(f'x = {x}')
         y = SquareAndMultiply(x, q, p)
-        # print(f'x^q\\p = {y}')
         if y == 1 or y == p-1:
             continue
         for _ in range(r):
             y = SquareAndMultiply(y, 2, p)
-            # print(f'y^2\\p = {y}')
             if y == p-1:
                 break
         else:
@@ -177,7 +173,6 @@ class RSA:
         do_encrypt = (self.debug and n is None and e is None) \
             or (not self.debug and length is not None)
         if do_encrypt:
-            # print('ENCRYPT')
             if length is not None:
                 self.length = length
             self.p, self.q, self.n, self.m = self._modulus()
@@ -185,7 +180,6 @@ class RSA:
             self.pub_key = (self.n, self.e)
             self.priv_key = (self.n, self.d)
         else:
-            # print('DECRYPT')
             self.n = n
             self.e = e
             self.pub_key = (self.n, self.e)
@@ -202,9 +196,7 @@ class RSA:
         if not self.debug:
             n = 0 
             while n.bit_length() != self.length:
-                # print('DEBUG --> looking for p')
                 p = self._draw_random_prime_number()
-                # print('DEBUG --> looking for q')
                 q = self._draw_random_prime_number()
                 if p == q:
                     continue
@@ -213,14 +205,16 @@ class RSA:
             p = 335895919357171
             q = 744053548667773
             n = p * q
-        # print('DEBUG --> n computed')
         m = (p-1) * (q -1)
-        # print('DEBUG --> m computed')
         return p, q, n, m
     
     def _draw_random_prime_number(self):
         n = random.getrandbits(self.length//2)
-        while not MillerRabin(n, 500):
+        # In the worst case scenario, the probability that Miller Rabin Test 
+        # declares as prime a composite number is 1/4, meaning that after k iterations
+        # the probability of error is 4^(-k). 100 iterations are more than
+        # sufficient for our application.
+        while not MillerRabin(n, 100):
             n = random.getrandbits(self.length//2)
         return n
     
@@ -233,48 +227,90 @@ class RSA:
         '''
         r = 0
         e = 1
-        # print('DEBUG --> looking for e and d')
         while  r != 1  and e < self.m:
             # Draw random e
-            # e = np.random.randint(2, m - )
-            e += 1  # e is alway sthe minimum. Done for repeatability
+            e += 1  # e is always the minimum. Done for repeatability
             r, d, _ = ExtendedEuclideanAlgorithm(e, self.m)
-        # print('DEBUG --> e and d computed')
         return e, d
 
     def encrypt(self, plaintext):
         if not self.debug:
             plaintext_int = int.from_bytes(plaintext, byteorder='big')
-            # print(f'pl int: {plaintext_int}')
-            # print(f'n: {self.n}')
             if plaintext_int > self.n:
                 raise ValueError('ERROR -> the plaintext to encrypt is too long. '\
-                                 'Try with a shorter one')
-            # print('DEBUG --> encrypting')
+                                 'Try with a shorter one.')
             ciphertext_int = SquareAndMultiply(plaintext_int, self.e, self.n)
             ciphertext = ciphertext_int.to_bytes(math.ceil(
                 ciphertext_int.bit_length()/8), byteorder='big')
         else: # DEBUG branch
-            # print(f'pl int: {plaintext}')
-            # print(f'n: {self.n}')
             if plaintext > self.n:
                 raise ValueError('ERROR -> the number to encrypt is bigger than n. '\
-                                 'Try with a smaller one')
+                                 'Try with a smaller one.')
             ciphertext = SquareAndMultiply(plaintext, self.e, self.n)
         return ciphertext
     
     def decrypt(self, ciphertext):
         if not self.debug:
             ciphertext_int = int.from_bytes(ciphertext, byteorder='big')
-            # print(f'cip int: {ciphertext_int}')
-            # print(f'n dec: {self.n}')
             plaintext_int = SquareAndMultiply(ciphertext_int, self.d, self.n)
-            # print(f'pl int dec: {plaintext_int}')
-            # print('DEBUG --> decrypting')
             plaintext = plaintext_int.to_bytes(math.ceil(
                 plaintext_int.bit_length()/8), byteorder='big')
         else: # DEBUG branch
-            # print(f'cip: {ciphertext}')
-            # print(f'n dec: {self.n}')
             plaintext = SquareAndMultiply(ciphertext, self.d, self.n)
         return plaintext
+    
+def ProbabilityToBePrime(L, threshold, init_iter, max_iter):
+    '''
+    Estimates the probability that an odd random integer in the interval 
+    [2^L; 2^(L+1)] is prime exploting the Monte Carlo Method.
+    --------
+    L, int
+        define the interval
+    threshold, int
+        minimum relative deviation between two consecutive estimations
+    init_iter, int
+        initial amount of iterations for the Monte Carlo simulation
+    max_iter, int
+        maximum number of iterations for the Monte Carlo simulation
+    --------
+    dict
+        iterations and corresponding probability estimations
+    float
+        probability estimation
+    '''
+    lower_limit = 2**(L // 2)
+    upper_limit = 2**(L // 2 +1)
+    curr_prob, prev_prob = 0, 0
+    estimations = {}
+    prime_counter = 0
+    iter = init_iter
+    prev_rel_diff, curr_rel_diff = float('inf'), float('inf')
+    while iter <= max_iter and (curr_rel_diff >= threshold or prev_rel_diff >= threshold):
+        for _ in range(int(iter)):
+            n = random.randint(lower_limit, upper_limit)
+            # If the number is even add 1 and make it odd -> we don't lose
+            # an iteration
+            if n % 2 == 0:
+                n += 1
+            # In the worst case scenario, the probability that Miller Rabin Test 
+            # decalres as prime a composite number is 1/4, meaning that after k iterations
+            # the probability of error is 4^(-k). 100 iterations are more than
+            # sufficient for our application.
+            if MillerRabin(n, 100):
+                prime_counter += 1
+
+        prev_prob = curr_prob
+        curr_prob = prime_counter/iter
+        estimations[iter] = curr_prob
+        prev_rel_diff= curr_rel_diff
+        if prev_prob == 0:
+            curr_rel_diff = float('inf')
+        else:
+            # Compute the relative difference between two consecutive
+            # estimations
+            curr_rel_diff = np.abs(curr_prob-prev_prob)/prev_prob
+        # Double the number of iterations
+        iter *= 2
+
+    return estimations, curr_prob
+    
